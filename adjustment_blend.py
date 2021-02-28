@@ -356,7 +356,7 @@ def is_object_in_layer(obj, layer):
 # ---------------------------------------------------------------------------- #
 # Run commands
 
-def run(smart=False, do_set=False):
+def run(smart=SMART, do_set=DO_SET):
     # We only process one layer and it's controls (or the selected controls in it)
 
     # Start by getting layers and which layer is the adjustment layer
@@ -912,5 +912,5 @@ def get_curve_data():
 # Developer section
 
 if __name__ == '__main__':
-    run(smart=SMART, do_set=DO_SET)
+    run()
     # pass
