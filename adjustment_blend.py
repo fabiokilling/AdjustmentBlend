@@ -70,13 +70,21 @@ def get_layers_to_process():
     elif len(selected_layers) > 1:
         layers_to_process = selected_layers[:-1]
 
-    if DEBUG:
-        print 'adjustment layer target is {0}. Summed layers are {1}'.format(selected_layers[-1], layers_to_process)
-
     adjustment_layer = selected_layers[-1]
 
     if not isinstance(layers_to_process, list): layers_to_process = [layers_to_process]
-    # if not isinstance(adjustment_layer, list): adjustment_layer = [adjustment_layer]
+    
+    layers_to_remove = []
+    for layer in layers_to_process:
+        if cmds.animLayer(layer, q=True, lock=True):
+            layers_to_remove.append(layer)
+    
+    for layer in layers_to_remove:
+        layers_to_process.remove(layer)
+    
+    if DEBUG:
+        print 'adjustment layer target is {0}.\nSummed layers are {1}\nLocked layers are {2}'.format(selected_layers[-1], layers_to_process, layers_to_remove)
+
     return adjustment_layer, layers_to_process
 
 
@@ -489,8 +497,8 @@ def run(smart=SMART, do_set=DO_SET):
                                 continue
                             try:
                                 ctrl_curves_to_process[obj][attr][layer] = cmds.getAttr(plug.replace('.inputB', '.inputA'))
-                            except: 
-                                cmds.error("No input found for {}".format(plug.replace('.inputB', '.inputA')))
+                            except:
+                                cmds.error("No input found for {0} or {1}".format(attribute, plug.replace('.inputB', '.inputA')))
 
         if not ctrl_curves_to_process[obj]: continue # Eject ghosts
 
